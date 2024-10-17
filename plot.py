@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import ticker, rcParams, rc
+from matplotlib import ticker, rcParams, rc, colors
 
 
 def enable_tex():
@@ -58,7 +58,7 @@ def read_data():
 def style_line_plot(axes):
     axes.set_xlabel(r"Rozegranych gier $(\times 1000)$")
     axes.set_ylabel(r"Odsetek wygranych gier $[\%]$")
-    axes.grid(visible = True, linestyle = "dotted")
+    axes.grid(visible = True, linestyle =(0, (1, 4)))
     axes.set_ylim([60,100])
     axes.set_xlim([0,500*1000])
     axes.xaxis.set_major_formatter(lambda x, pos: int(x/1000))
@@ -77,7 +77,7 @@ def style_line_plot(axes):
     sec_xaxis.tick_params(direction = 'in')
     
 def style_box_plot(axes):
-    axes.grid(visible = True, linestyle = "dotted")
+    axes.grid(visible = True, linestyle =(0, (1, 4)))
     axes.set_ylim([60,100])
     axes.yaxis.set_major_locator(ticker.MultipleLocator(5))
     axes.tick_params(axis = 'x', labelrotation = 30)
@@ -91,7 +91,7 @@ flierprops = dict(marker='+', markerfacecolor='b', markersize=8,
 medianprops = dict(linestyle='-', linewidth=2, color='r')
 
 meanpointprops = dict(marker='o', markeredgecolor='black',
-                      markerfacecolor='b')
+                      markerfacecolor='b', zorder = -1)
 
 whiskerprops = dict(linestyle =(0, (5, 5)), color = 'b', linewidth = 1)
 
@@ -123,10 +123,13 @@ def create_plot(algs):
     fig, axes= plt.subplots(1, 2)
 
     for alg in algs:
+        marker_rgba = list(colors.to_rgba(alg['color']))
+        marker_rgba[-1] = 0.75
         alg['df'].plot(ax = axes[0], x = 'effort', y = 'mean',
                     label = alg['label'], marker = alg['marker'], markevery = 40,
                     markeredgecolor='black', color = alg['color'],
-                    markeredgewidth=0.5, linestyle ='-', linewidth = .5)
+                    markeredgewidth=0.5, linestyle ='-', linewidth = .5, markerfacecolor = marker_rgba)
+        
 
 
     finish_results.plot(ax = axes[1], kind = "box", notch = True, flierprops = flierprops,
